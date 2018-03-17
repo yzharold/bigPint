@@ -69,7 +69,7 @@ staticScatMatPoint = function(data=data, pointSize=pointSize, outDir=outDir, sav
   my_fn <- function(data, mapping, ...){
     x = data[,c(as.character(mapping$x))]
     y = data[,c(as.character(mapping$y))]
-    p <- ggplot(data, aes(x=x, y=y)) + geom_point(size = pointSize) + geom_abline(intercept = 0, color = "red", size = 0.5) + coord_cartesian(xlim = c(-1, maxRange[2]), ylim = c(-1, maxRange[2])) + scale_y_continuous(labels = function (x) floor(x)) + scale_x_continuous(labels = function (x) floor(x))
+    p <- ggplot(data, aes(x=x, y=y)) + geom_point(size = pointSize) + geom_abline(intercept = 0, color = "red", size = 0.5) + coord_cartesian(xlim = c(-1, maxRange[2]), ylim = c(-1, maxRange[2])) + scale_y_continuous(labels = function (x) floor(x)) + scale_x_continuous(breaks = pretty_breaks(), labels = function (x) floor(x))
     p
   }
   
@@ -82,7 +82,7 @@ staticScatMatPoint = function(data=data, pointSize=pointSize, outDir=outDir, sav
       maxVal = max(dataSel[,-1])
       minVal = min(dataSel[,-1])
       maxRange = c(minVal, maxVal)
-      p <- ggpairs(dataSel[,-1], lower = list(continuous = my_fn), upper = list(continuous = wrap("cor", size = 3, alignPercent = 1))) + theme(axis.text=element_text(size=50), strip.text = element_text(size = 50)) + theme_gray()
+      p <- ggpairs(dataSel[,-1], lower = list(continuous = my_fn), upper = list(continuous = wrap("cor", size = 4, alignPercent = 1))) + theme(axis.text=element_text(size=50), strip.text = element_text(size = 20)) + theme_gray()
       if (saveFile == TRUE){
         jpeg(filename=paste0(outDir, "/", group1, "_", group2, "_points.jpg"), height=500, width=500)
         print(p)

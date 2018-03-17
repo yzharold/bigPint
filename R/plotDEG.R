@@ -142,7 +142,7 @@ degScatMatPoints = function(data=data, dataMetrics=dataMetrics, pointSize=pointS
     yChar = as.character(mapping$y)
     x = data[,c(xChar)]
     y = data[,c(yChar)]
-    p <- ggplot(data, aes(x=x, y=y)) + geom_point(size = pointSize) + geom_abline(intercept = 0, color = "red", size = 0.5) + coord_cartesian(xlim = c(-1, maxRange[2]), ylim = c(-1, maxRange[2])) + geom_point(data = degData, aes_string(x=xChar, y=yChar), inherit.aes = FALSE, color = degPointColor, size = pointSize)
+    p <- ggplot(data, aes(x=x, y=y)) + geom_point(size = pointSize) + geom_abline(intercept = 0, color = "red", size = 0.5) + coord_cartesian(xlim = c(maxRange[1], maxRange[2]), ylim = c(maxRange[1], maxRange[2])) + geom_point(data = degData, aes_string(x=xChar, y=yChar), inherit.aes = FALSE, color = degPointColor, size = pointSize)
     p
   }
   
@@ -176,7 +176,7 @@ degScatMatPoints = function(data=data, dataMetrics=dataMetrics, pointSize=pointS
         fileName = paste0(outDir, "/", group1, "_", group2, "_deg_smpoints_", threshVal, "_.jpg")
       }
       
-      p <- ggpairs(datSel[,-1], lower = list(continuous = my_fn), upper = list(continuous = wrap("cor", size = 5))) + theme_gray()
+      p <- ggpairs(datSel[,-1], lower = list(continuous = my_fn), upper = list(continuous = wrap("cor", size = 4))) + theme_gray()
       #jpeg(filename=fileName, height=900, width=900)
       #print(p)
       #dev.off()
