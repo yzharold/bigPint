@@ -338,7 +338,7 @@ selDelIntShadePCP = function(pcpDat){
         xArr = [];
         yArr = [];
         for (b=0; b<vLength; b++){
-        xArr.push(b)
+        xArr.push(b+1)
         yArr.push(pcpDat[a][cNames[b]]);
         }
         var pcpLine = {
@@ -567,7 +567,7 @@ selDelPCP = function(pcpDat){
         xArr = [];
         yArr = [];
         for (b=0; b<vLength; b++){
-        xArr.push(b)
+        xArr.push(b+1)
         yArr.push(pcpDat[a][cNames[b]]);
         }
         var pcpLine = {
@@ -724,7 +724,7 @@ selDelShadePCP = function(pcpDat){
       xArr = [];
       yArr = [];
       for (b=0; b<vLength; b++){
-      xArr.push(b)
+      xArr.push(b+1)
       yArr.push(pcpDat[a][cNames[b]]);
       }
       var pcpLine = {
@@ -953,7 +953,7 @@ selPCP = function(pcpDat){
       xArr = [];
       yArr = [];
       for (b=0; b<vLength; b++){
-      xArr.push(b)
+      xArr.push(b+1)
       yArr.push(pcpDat[a][cNames[b]]);
       }
       var pcpLine = {
