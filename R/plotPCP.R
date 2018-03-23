@@ -3,7 +3,7 @@
 #' @param pcpDat the data frame that contains the parallel coordinate plot values
 #' @param option the interactivity option ("deleteInteger", "delete", "highlight"); default ("deleteInteger")
 #' @importFrom plotly plotlyOutput ggplotly renderPlotly layout
-#' @importFrom ggplot2 ggplot aes_string geom_point xlim ylim
+#' @importFrom ggplot2 ggplot aes_string geom_point xlim ylim scale_x_discrete
 #' @importFrom shiny verbatimTextOutput fluidPage reactive renderPrint shinyApp bootstrapPage
 #' @importFrom htmlwidgets onRender
 #' @importFrom utils str
@@ -338,6 +338,7 @@ selDelIntShadePCP = function(pcpDat){
         xArr = [];
         yArr = [];
         for (b=0; b<vLength; b++){
+        // used to be b
         xArr.push(b+1)
         yArr.push(pcpDat[a][cNames[b]]);
         }
@@ -370,8 +371,10 @@ selDelIntShadePCP = function(pcpDat){
         var yMax = e.range.y[1]
         var integers = []
         
-        if (!((xMax<0) || (xMin>(vLength-1)))){
+        // used to be vLength-1
+        if (!((xMax<0) || (xMin>(vLength)))){
         for (a=xMinC; a<(xMaxF+1); a++){
+        // used to be a
         integers.push(a-1)
         }
         }
