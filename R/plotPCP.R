@@ -308,8 +308,10 @@ selDelIntShadePCP = function(pcpDat){
     
     colNms <- colnames(pcpDat[, c(2:(ncol(pcpDat)))])
     nVar <- length(colNms)
-
-    p <- ggplot(mtcars, aes(x = wt, y = mpg)) + geom_point(alpha=0) + xlim(0,(nVar-1)) +ylim(min(pcpDat[,2:(nVar+1)]),max(pcpDat[,2:(nVar+1)])) + xlab("Sample") + ylab("Count") + scale_x_discrete(limits=colnames(pcpDat[-1]))
+    
+    emptyDat = mtcars
+    emptyDat$wt[1]=nVar-0.5
+    p <- ggplot(emptyDat, aes(x = wt, y = mpg)) + geom_point(alpha=0) + xlim(0,(nVar-1)) +ylim(min(pcpDat[,2:(nVar+1)]),max(pcpDat[,2:(nVar+1)])) + xlab("Sample") + ylab("Count") + scale_x_discrete(limits=colnames(pcpDat[-1]))
     gp <- ggplotly(p)
     
     inputRectDf <- reactive({
@@ -549,7 +551,9 @@ selDelPCP = function(pcpDat){
     colNms <- colnames(pcpDat[, c(2:(ncol(pcpDat)))])
     nVar <- length(colNms)
     
-    p <- ggplot(mtcars, aes(x = wt, y = mpg)) + geom_point(alpha=0) + xlim(0,(nVar-1)) +ylim(min(pcpDat[,2:(nVar+1)]),max(pcpDat[,2:(nVar+1)])) + xlab("Sample") + ylab("Count") + scale_x_discrete(limits=colnames(pcpDat[-1]))
+    emptyDat = mtcars
+    emptyDat$wt[1]=nVar-0.5
+    p <- ggplot(emptyDat, aes(x = wt, y = mpg)) + geom_point(alpha=0) + xlim(0,(nVar-1)) +ylim(min(pcpDat[,2:(nVar+1)]),max(pcpDat[,2:(nVar+1)])) + xlab("Sample") + ylab("Count") + scale_x_discrete(limits=colnames(pcpDat[-1]))
     gp <- ggplotly(p)
     
     output$plot1 <- renderPlotly({
@@ -936,7 +940,9 @@ selPCP = function(pcpDat){
     colNms <- colnames(pcpDat[, c(2:(ncol(pcpDat)))])
     nVar <- length(colNms)
     
-    p <- ggplot(mtcars, aes(x = wt, y = mpg)) + geom_point(alpha=0) + xlim(0,(nVar-1)) +ylim(min(pcpDat[,2:(nVar+1)]),max(pcpDat[,2:(nVar+1)])) + xlab("Sample") + ylab("Count") + scale_x_discrete(limits=colnames(pcpDat[-1]))
+    emptyDat = mtcars
+    emptyDat$wt[1]=nVar-0.5
+    p <- ggplot(emptyDat, aes(x = wt, y = mpg)) + geom_point(alpha=0) + xlim(0,(nVar-1)) +ylim(min(pcpDat[,2:(nVar+1)]),max(pcpDat[,2:(nVar+1)])) + xlab("Sample") + ylab("Count") + scale_x_discrete(limits=colnames(pcpDat[-1]))
     gp <- ggplotly(p)
     
     output$plot1 <- renderPlotly({
