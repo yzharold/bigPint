@@ -80,11 +80,7 @@ library(knitr)
 
 \subsection{Summary}
 
-The \pkg{bigPint} package provides tools for course instructors to generate electronic reports regarding student performance. Instructors can produce reports immediately after homework assignment deadlines, and use them to better understand student performance throughout the teaching semester. The goal is to allow instructors to assess and improve upon their teaching approaches in a fast response cycle.
-
-The tools in this package will be especially beneficial for users who supervise large introductory courses. These courses often consist of multiple topics (groups of learning outcomes) that are taught by multiple instructors across multiple sections (groups of students). To accomodate the various ways that student performance can be examined for such courses, the package can generate various reports that can compare within and between topics and sections.
-
-At its simplest, a report can be generated for one topic and one section. This would allow course coordinators to determine how well a particular section performed on a particular topic. Reports can also be generated for one topic across multiple sections, which can allow course coordinators to quickly determine how well and consistently the multiple sections performed on a topic of interest. This could be particularly insightful in cases where discrepancies in student performance are discovered between sections, especially if different instructors and/or teaching methods are being used across the sections.
+The \pkg{bigPint} package provides tools 
 
 \subsection{Installation}
 
@@ -119,7 +115,7 @@ help(package="bigPint")
 To access more detailed information about a specific function in the \pkg{bigPint} package, use the following help command on that function, such as: \\
 
 <<eval=FALSE>>=
-help(mergeSection)
+help(functionName)
 @ 
 
 The above command will return the help file for the function. This should include a description of the function, proper usage syntax of the function, input parameter options and defaults, and output values.
@@ -131,46 +127,10 @@ Blah blah
 
 \subsection{Database structure}
 
-The online homework database consists of 184 learning outcomes, which are grouped into 26 topics. In total, the database contains 2000 questions. A given student does not receive all 2000 questions over the course of the semester. Instead, similar questions are grouped together to form 330 question sets, and a given student will receive a specified number of questions (usually one) from each of these 330 question sets.
+Blah blah
 
-\subsubsection{Topics}
+As an example, the learning outcomes for \texttt{Topic 03} are provided in List \hyperref[sec:lo]{1} below.
 
-The topics in the database cover a broad range of material that includes curriculum from Advanced Placement Statistics and popular introductory statistics textbooks. The topics are not rigidly structured around a specific textbook, and are not self-contained. Hence, course supervisors can tailor their course by selecting a subset of and/or reordering topics from the database. The full list of topic numbers and descriptions from the database is provided below in Table \ref{tab:topics}.
-
-\begin{center}
-\captionof{table}{Topic numbers and descriptions}
-\label{tab:topics}
-\begin{tabular} { | l | l | }
-\hline \textbf{Number} & \textbf{Description} \\
-\hline
-01 & Data \\
-\hline
-02  & Descriptive Statistics for a Single Categorical Variable \\
-\hline
-03 & Descriptive Statistics for a Single Quantitative Variable \\
-\hline
-\end{tabular}
-\end{center}
-
-\subsubsection{Learning outcomes}
-
-Each topic contains learning outcomes, which are a list of statements that describe what a student is expected to understand after completing the topic. Learning outcomes form the main structure of the electronic assessment model of \texttt{bigPint}. The average topic contains about seven learning outcomes. As an example, the learning outcomes for \texttt{Topic 03} are provided in List \hyperref[sec:lo]{1} below.
-
-\newpage
-\centerline{List 1: Learning outcomes for Topic 03}
-\vspace{-2mm}
-\begin{framed}
-\begin{enumerate}[label=\Alph*.]
-\label{sec:lo}
-\item Use standardizing to determine how many standard deviations an observation is away from the mean value.
-\item Use z-scores to compare observations for different quantitative variables.
-\item Explain how standardizing affects the shape, center, and variability of the distribution of a quantitative variable.
-\item Determine which quantitative variables could be modeled using the normal distribution by interpreting graphical representations of the variable.
-\item Apply the 68-95-99.7 Rule to any quantitative variable with a normal distribution.
-\item Find percentile or area values for any given observation from a normal distribution.
-\item Find the value of an observation when given a percentile or area value from the normal distribution.
-\end{enumerate}
-\end{framed}
 
 \section{Example data}
 \label{sec:createOut}
@@ -191,7 +151,7 @@ dir.create(file.path(system.file("extdata", package = "bigPint"), "OutputFiles")
 
 \section{Generating Reports}
 
-Currently, the \pkg{bigPint} package offers six report types, depending on what the user is trying to compare and analyze about student performance. The same function \texttt{makeReport()} is used to generate each of these six report types; however, the input parameter \texttt{reportType} to the function will be different depending on which of the six report types the user wishes to run. It is most efficient for the user to hard-code in the \texttt{reportType} parameter. For that reason, below is a reference box for the six types of string options (in quotes) that can be used for the \texttt{reportType} parameter, depending on which of the six report types the user will run: 
+Currently, the \pkg{bigPint} package offers six report types 
 \begin{framed}
 \begin{itemize}
 \vspace{-3mm}

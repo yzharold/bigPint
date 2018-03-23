@@ -4,14 +4,14 @@
 #' @param option the interactivity option ("deleteInteger", "delete", "highlight"); default ("deleteInteger")
 #' @importFrom plotly plotlyOutput ggplotly renderPlotly layout
 #' @importFrom ggplot2 ggplot aes_string geom_point xlim ylim
-#' @importFrom shiny verbatimTextOutput fluidPage reactive renderPrint shinyApp
+#' @importFrom shiny verbatimTextOutput fluidPage reactive renderPrint shinyApp bootstrapPage
 #' @importFrom htmlwidgets onRender
 #' @importFrom utils str
 #' @export
 #' @examples
 #' set.seed(3)
-#' f = function(){1.3*rnorm(100)}
-#' pcpDat = data.frame(ID = paste0("ID", 1:100), A=f(), B=f(), C=f(), D=f(), E=f(), F=f())
+#' f = function(){1.3*rnorm(500)}
+#' pcpDat = data.frame(ID = paste0("ID", 1:500), A.1=f(), A.2=f(), A.3=f(), B.1=f(), B.2=f(), B.3=f())
 #' pcpDat$ID = as.character(pcpDat$ID)
 #' plotPCP(pcpDat = pcpDat)
 plotPCP = function(pcpDat, option = "deleteInteger"){
@@ -309,7 +309,7 @@ selDelIntShadePCP = function(pcpDat){
     colNms <- colnames(pcpDat[, c(2:(ncol(pcpDat)))])
     nVar <- length(colNms)
     
-    p <- ggplot(mtcars, aes(x = wt, y = mpg)) + geom_point(alpha=0) + xlim(0,(nVar-1)) +ylim(min(pcpDat[,2:(nVar+1)]),max(pcpDat[,2:(nVar+1)])) + xlab("Sample") + ylab("Count")
+    p <- ggplot(mtcars, aes(x = wt, y = mpg)) + geom_point(alpha=0) + xlim(0,(nVar-1)) +ylim(min(pcpDat[,2:(nVar+1)]),max(pcpDat[,2:(nVar+1)])) + xlab("Sample") + ylab("Count") + scale_x_discrete(limits=colnames(pcpDat[-1]))
     gp <- ggplotly(p)
     
     inputRectDf <- reactive({
@@ -333,6 +333,7 @@ selDelIntShadePCP = function(pcpDat){
         var dLength = pcpDat.length
         var vLength = data.nVar
         var cNames = data.colNms
+        console.log(['cNames', cNames])
         for (a=0; a<dLength; a++){
         xArr = [];
         yArr = [];

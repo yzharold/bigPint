@@ -16,8 +16,8 @@ Highlight parallel coordinate plot lines inside selection box
 }
 \examples{
 set.seed(3)
-f = function(){1.3*rnorm(100)}
-pcpDat = data.frame(ID = paste0("ID", 1:100), A=f(), B=f(), C=f(), D=f(), E=f(), F=f())
+f = function(){1.3*rnorm(500)}
+pcpDat = data.frame(ID = paste0("ID", 1:500), A.1=f(), A.2=f(), A.3=f(), B.1=f(), B.2=f(), B.3=f())
 pcpDat$ID = as.character(pcpDat$ID)
 plotPCP(pcpDat = pcpDat)
 }
