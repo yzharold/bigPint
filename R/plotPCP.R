@@ -549,7 +549,7 @@ selDelPCP = function(pcpDat){
     colNms <- colnames(pcpDat[, c(2:(ncol(pcpDat)))])
     nVar <- length(colNms)
     
-    p <- ggplot(mtcars, aes(x = wt, y = mpg)) + geom_point(alpha=0) + xlim(0,(nVar-1)) +ylim(min(pcpDat[,2:(nVar+1)]),max(pcpDat[,2:(nVar+1)])) + xlab("Sample") + ylab("Count")
+    p <- ggplot(mtcars, aes(x = wt, y = mpg)) + geom_point(alpha=0) + xlim(0,(nVar-1)) +ylim(min(pcpDat[,2:(nVar+1)]),max(pcpDat[,2:(nVar+1)])) + xlab("Sample") + ylab("Count") + scale_x_discrete(limits=colnames(pcpDat[-1]))
     gp <- ggplotly(p)
     
     output$plot1 <- renderPlotly({
@@ -570,7 +570,7 @@ selDelPCP = function(pcpDat){
       xArr = [];
       yArr = [];
       for (b=0; b<vLength; b++){
-      xArr.push(b)
+      xArr.push(b+1)
       yArr.push(pcpDat[a][cNames[b]]);
       }
       var pcpLine = {
@@ -590,8 +590,8 @@ selDelPCP = function(pcpDat){
       //console.log(pcpDat)
       var dLength = pcpDat.length
       var selectedPCP = []
-      var xMin = e.range.x[0]
-      var xMax = e.range.x[1]
+      var xMin = e.range.x[0]-1
+      var xMax = e.range.x[1]-1
       var xMinF = Math.floor(xMin)
       var xMinC = Math.ceil(xMin)
       var xMaxF = Math.floor(xMax)
