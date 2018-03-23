@@ -372,7 +372,7 @@ selDelIntShadePCP = function(pcpDat){
         
         if (!((xMax<0) || (xMin>(vLength-1)))){
         for (a=xMinC; a<(xMaxF+1); a++){
-        integers.push(a)
+        integers.push(a-1)
         }
         }
         var iLength = integers.length
