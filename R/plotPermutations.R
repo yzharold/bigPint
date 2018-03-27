@@ -101,7 +101,7 @@ plotPermutations <- function(data = data, nPerm=10, topThresh=50, threshVal=0.05
           FDR[j] = permList[[j]]$adjPVal[t]
           FC[j] = permList[[j]]$logFC[t]
           
-          gene = permList[[j]][t,2:(2*nRep+1)] # Switch i and j
+          gene = permList[[j]][t,2:(2*nRep+1)]
           x = unlist(lapply(colnames(gene), function (x) unlist(strsplit(x, "[.]"))[1]))
           x[x==group1] <- 1
           x[x==group2] <- 2
@@ -119,7 +119,9 @@ plotPermutations <- function(data = data, nPerm=10, topThresh=50, threshVal=0.05
         
         allPlot2 = ggplot(fullDat, aes(x, y)) + geom_point(aes(colour = factor(x)), shape = 20, size=5, alpha = 0.5) + scale_shape(solid = FALSE) + ggtitle(paste("Transcript: ", t)) + ylab("Read Count") + scale_y_continuous(limits=c(0, max(fullDat$y))) + theme(axis.title.x = element_blank(), legend.position="bottom", axis.text=element_text(size=12), axis.title=element_text(size=12), legend.title=element_text(size=12), legend.text=element_text(size=12), plot.title=element_text(hjust=0.5)) + labs(colour = "Group", size=12) + geom_segment(aes(x = 1, y = meanG1, xend = 2, yend = meanG2), colour="gray25", size = 0.1) + facet_wrap(~ z, ncol = 5)
         
-        statPlot = qplot(FDR, FC, xlab = "FDR", ylab ="logFC", color = factor(Color), size = factor(Color)) + scale_color_manual(values=c("black", "red")) + scale_size_manual(values = c(3, 6)) + theme(legend.position="none")
+        absFC = abs(FC)
+        
+        statPlot = qplot(FDR, absFC, xlab = "FDR", ylab ="logFC", color = factor(Color), size = factor(Color)) + scale_color_manual(values=c("black", "red")) + scale_size_manual(values = c(3, 6)) + theme(legend.position="none") + ylim(0,absFC)
         
         jpeg(file = paste0(finalOutDir, "/ind_", "Gene", t, ".jpg"), height = ceiling(nPerm/5)*175, width = 700)
         print(allPlot)
