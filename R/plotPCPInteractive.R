@@ -13,8 +13,8 @@
 #' f = function(){1.3*rnorm(500)}
 #' pcpDat = data.frame(ID = paste0("ID", 1:500), A.1=f(), A.2=f(), A.3=f(), B.1=f(), B.2=f(), B.3=f())
 #' pcpDat$ID = as.character(pcpDat$ID)
-#' plotPCP(pcpDat = pcpDat)
-plotPCP = function(pcpDat, option = "deleteInteger"){
+#' plotPCPInteractive(pcpDat = pcpDat)
+plotPCPInteractive = function(pcpDat, option = "deleteInteger"){
   
   if (option=="delete"){
     selDelPCP(pcpDat)

@@ -101,7 +101,7 @@ plotPermutations <- function(data = data, nPerm=10, topThresh=50, threshVal=0.05
           FDR[j] = permList[[j]]$adjPVal[t]
           FC[j] = permList[[j]]$logFC[t]
           
-          gene = permList[[j]][i,2:(2*nRep+1)]
+          gene = permList[[j]][t,2:(2*nRep+1)] # Switch i and j
           x = unlist(lapply(colnames(gene), function (x) unlist(strsplit(x, "[.]"))[1]))
           x[x==group1] <- 1
           x[x==group2] <- 2

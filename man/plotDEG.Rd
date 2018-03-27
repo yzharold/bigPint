@@ -9,7 +9,7 @@ plotDEG(data = data, dataMetrics = dataMetrics, outDir = getwd(),
   greyPointSize = 0.1, lineSize = 0.1, lineColor = "orange",
   degPointColor = "orange", xbins = 10, piLevel = 0.95, threshFC = 3,
   threshOrth = 3, threshVar = "FDR", threshVal = 0.05, lineList = NULL,
-  logFC = "logFC", PValue = "PValue", option = "scatterHexagon",
+  logFC = "logFC", PValue = "PValue", option = "scatterPoints",
   fileName = "")
 }
 \arguments{
@@ -51,9 +51,11 @@ plotDEG(data = data, dataMetrics = dataMetrics, outDir = getwd(),
 
 \item{PValue}{name of column in dataMetrics object that contains p-values (character string; default "PValue"; used in "volcano")}
 
-\item{option}{the type of plot (can choose from c("scatterHexagon", "scatterPoints", "scatterFoldChange", "scatterPrediction", "parallelCoord", "volcano"); default "scatterHexagon")}
+\item{option}{the type of plot (can choose from c("parallelCoord", "scatterFoldChange", "scatterHexagon", "scatterOrthogonal", "scatterPoints", "scatterPrediction", "volcano"); default "scatterPoints")}
 
 \item{fileName}{the name of the output file (default is based on plot option)}
+
+\item{saveFile}{save file to outDir (default FALSE)}
 }
 \description{
 Superimpose differentially expressed genes onto background plot containing all genes.

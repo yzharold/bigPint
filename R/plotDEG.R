@@ -15,7 +15,6 @@
 #' 
 #' @param data data frame containing read counts
 #' @param dataMetrics data frame containing metrics
-#' @param outDir output directory to save all images (default current directory)
 #' @param pointSize size of plotted points (default 0.5; used in "scatterHexagon", "scatterPoints", and "volcano")
 #' @param bluePointSize size of plotted blue points (default 0.1; used in "scatterFoldChange" and "scatterOrthogonal" and "scatterPrediction")
 #' @param redPointSize size of plotted red points (default 0.1; used in "scatterFoldChange" and "scatterOrthogonal" and "scatterPrediction")
@@ -32,11 +31,14 @@
 #' @param lineList list of ID values of genes to be drawn from data as parallel coordinate lines. Use this parameter if you have predetermined genes to be drawn. Otherwise, use dataMetrics, threshVar, and threshVal to create genes to be drawn (default NULL; used in "parallelCoord")
 #' @param logFC name of column in dataMetrics object that contains log fold change values (character string; default "logFC"; used in "volcano")
 #' @param PValue name of column in dataMetrics object that contains p-values (character string; default "PValue"; used in "volcano")
-#' @param option the type of plot (can choose from c("scatterHexagon", "scatterPoints", "scatterFoldChange", "scatterPrediction", "parallelCoord", "volcano"); default "scatterHexagon")
+#' @param option the type of plot (can choose from c("parallelCoord", "scatterFoldChange", "scatterHexagon", "scatterOrthogonal", "scatterPoints", "scatterPrediction", "volcano"); default "scatterPoints")
+#' @param saveFile save file to outDir (default FALSE) 
+#' @param outDir output directory to save all images (default current directory)
 #' @param fileName the name of the output file (default is based on plot option)
+#' 
 #' @importFrom dplyr filter %>%
-#' @importFrom GGally ggpairs
-#' @importFrom ggplot2 ggplot aes_string aes geom_point xlim ylim geom_hex  coord_cartesian xlim ylim xlab ylab geom_ribbon  geom_boxplot geom_line geom_abline
+#' @importFrom GGally ggpairs wrap
+#' @importFrom ggplot2 ggplot aes_string aes geom_point xlim ylim geom_hex coord_cartesian xlim ylim xlab ylab geom_ribbon  geom_boxplot geom_line geom_abline theme_gray
 #' @importFrom grDevices jpeg dev.off
 #' @importFrom hexbin hexbin hcell2xy
 #' @importFrom htmlwidgets onRender
@@ -45,33 +47,37 @@
 #' @importFrom stats lm predict
 #' @importFrom tidyr gather
 #' @importFrom utils str
+#' 
 #' @export
 #' @examples
 #' data(soybean_cn)
 #' data(soybean_cn_metrics)
 #' plotDEG(soybean_cn, soybean_cn_metrics)
-plotDEG = function(data=data, dataMetrics=dataMetrics, outDir=getwd(), pointSize=0.5, bluePointSize=0.1, redPointSize=0.1, greyPointSize=0.1, lineSize=0.1, lineColor = "orange", degPointColor = "orange", xbins=10, piLevel=0.95, threshFC=3, threshOrth=3, threshVar="FDR", threshVal=0.05, lineList = NULL, logFC="logFC", PValue="PValue", option="scatterHexagon", fileName=""){
+plotDEG = function(data=data, dataMetrics=dataMetrics, outDir=getwd(), pointSize=0.5, bluePointSize=0.1, redPointSize=0.1, greyPointSize=0.1, lineSize=0.1, lineColor = "orange", degPointColor = "orange", xbins=10, piLevel=0.95, threshFC=3, threshOrth=3, threshVar="FDR", threshVal=0.05, lineList = NULL, logFC="logFC", PValue="PValue", option="scatterPoints", fileName=""){
 
-  if (option=="volcano"){
-    degVolcano(data=data, dataMetrics=dataMetrics, logFC=logFC, PValue=PValue, threshVar=threshVar, threshVal=threshVal, xbins=xbins, pointSize=pointSize, outDir=outDir)
-  }
-  else if (option=="scatterOrthogonal"){
-    degOrth(data=data, dataMetrics=dataMetrics, threshOrth=threshOrth, threshVar = threshVar, threshVal = threshVar, bluePointSize=bluePointSize, redPointSize=redPointSize, greyPointSize=greyPointSize, outDir=outDir)
+  if (option=="parallelCoord"){
+    degPCP(data=data, dataMetrics=dataMetrics, threshVar=threshVar, threshVal=threshVal, lineSize=lineSize, lineList=lineList, lineColor=lineColor, outDir=outDir, fileName=fileName)
   }
   else if (option=="scatterFoldChange"){
     degFC(data=data, dataMetrics=dataMetrics, threshFC=threshFC, bluePointSize=bluePointSize, redPointSize=redPointSize, greyPointSize=greyPointSize, outDir=outDir)
   }  
-  else if (option=="scatterPrediction"){
-    degPI(data=data, dataMetrics=dataMetrics, threshVar=threshVar, threshVal=threshVal, piLevel=piLevel, bluePointSize=bluePointSize, redPointSize=redPointSize, greyPointSize=greyPointSize, outDir=outDir)
+  else if (option=="scatterHexagon"){
+    degScatMat(data=data, dataMetrics=dataMetrics, pointSize=pointSize, xbins=xbins, threshVar=threshVar, threshVal=threshVal, outDir=outDir)
   }
-  else if (option=="parallelCoord"){
-    degPCP(data=data, dataMetrics=dataMetrics, threshVar=threshVar, threshVal=threshVal, lineSize=lineSize, lineList=lineList, lineColor=lineColor, outDir=outDir, fileName=fileName)
-  }
+  else if (option=="scatterOrthogonal"){
+    degOrth(data=data, dataMetrics=dataMetrics, threshOrth=threshOrth, threshVar = threshVar, threshVal = threshVar, bluePointSize=bluePointSize, redPointSize=redPointSize, greyPointSize=greyPointSize, outDir=outDir)
+  }  
   else if (option=="scatterPoints"){
     degScatMatPoints(data=data, dataMetrics=dataMetrics, pointSize=pointSize, degPointColor=degPointColor, threshVar=threshVar, threshVal=threshVal, outDir=outDir, fileName=fileName)
-  } 
-  else{
-    degScatMat(data=data, dataMetrics=dataMetrics, pointSize=pointSize, xbins=xbins, threshVar=threshVar, threshVal=threshVal, outDir=outDir)
+  }  
+  else if (option=="scatterPrediction"){
+    degPI(data=data, dataMetrics=dataMetrics, threshVar=threshVar, threshVal=threshVal, piLevel=piLevel, bluePointSize=bluePointSize, redPointSize=redPointSize, greyPointSize=greyPointSize, outDir=outDir)
+  }  
+  else if (option=="volcano"){
+    degVolcano(data=data, dataMetrics=dataMetrics, logFC=logFC, PValue=PValue, threshVar=threshVar, threshVal=threshVal, xbins=xbins, pointSize=pointSize, outDir=outDir)
+  }
+  else {
+    stop("Check that you selected a valid option parameter")
   }
 } 
 
@@ -132,19 +138,9 @@ degScatMat = function(data=data, dataMetrics=dataMetrics, pointSize=pointSize, x
 }
 
 #' Superimpose DEGs onto scatterplot matrix
-degScatMatPoints = function(data=data, dataMetrics=dataMetrics, pointSize=pointSize, degPointColor = degPointColor, threshVar = threshVar, threshVal = threshVal, outDir=outDir, degScatMatPoints=degScatMatPoints, fileName=fileName){
+degScatMatPoints = function(data=data, dataMetrics=dataMetrics, pointSize=pointSize, degPointColor = degPointColor, threshVar = threshVar, threshVal = threshVal, outDir=outDir, fileName=fileName){
   
   counts <- hexID <- ID <- NULL
-  
-  # Utility function
-  my_fn <- function(data, mapping, ...){
-    xChar = as.character(mapping$x)
-    yChar = as.character(mapping$y)
-    x = data[,c(xChar)]
-    y = data[,c(yChar)]
-    p <- ggplot(data, aes(x=x, y=y)) + geom_point(size = pointSize) + geom_abline(intercept = 0, color = "red", size = 0.5) + coord_cartesian(xlim = c(maxRange[1], maxRange[2]), ylim = c(maxRange[1], maxRange[2])) + geom_point(data = degData, aes_string(x=xChar, y=yChar), inherit.aes = FALSE, color = degPointColor, size = pointSize)
-    p
-  }
   
   colNames <- colnames(data)
   myPairs <- unique(sapply(colNames, function(x) unlist(strsplit(x,"[.]"))[1]))
@@ -157,13 +153,22 @@ degScatMatPoints = function(data=data, dataMetrics=dataMetrics, pointSize=pointS
   minVal = min(data[,-1])
   maxRange = c(minVal, maxVal)
   
+  # Utility function
+  my_fn <- function(data, mapping, degData...){
+    xChar = as.character(mapping$x)
+    yChar = as.character(mapping$y)
+    x = data[,c(xChar)]
+    y = data[,c(yChar)]
+    p <- ggplot(data, aes(x=x, y=y)) + geom_point(size = pointSize) + geom_abline(intercept = 0, color = "red", size = 0.5) + coord_cartesian(xlim = c(maxRange[1], maxRange[2]), ylim = c(maxRange[1], maxRange[2])) #+ geom_point(data = degData, aes_string(x=xChar, y=yChar), inherit.aes = FALSE, color = degPointColor, size = pointSize)
+    p
+  }
+  
   ret = list()
   for (i in 1:(length(myPairs)-1)){
     for (j in (i+1):length(myPairs)){
       group1 = myPairs[i]
       group2 = myPairs[j]
       datSel <- cbind(ID=data$ID, data[,which(colGroups %in% c(group1, group2))])
-      
       rowDEG1 <- which(dataMetrics[[paste0(group1,"_",group2)]][threshVar] < threshVal)
       rowDEG2 <- which(dataMetrics[[paste0(group2,"_",group1)]][threshVar] < threshVal)
       rowDEG <- c(rowDEG1, rowDEG2)
@@ -173,10 +178,12 @@ degScatMatPoints = function(data=data, dataMetrics=dataMetrics, pointSize=pointS
       degData <- datSel[which(datSel$ID %in% degID),]
       
       if (fileName==""){
-        fileName = paste0(outDir, "/", group1, "_", group2, "_deg_smpoints_", threshVal, "_.jpg")
+        fileName = paste0(outDir, "/", group1, "_", group2, "_deg_scatterPoints_", threshVar, "_", threshVal, ".jpg")
       }
       
       p <- ggpairs(datSel[,-1], lower = list(continuous = my_fn), upper = list(continuous = wrap("cor", size = 4))) + theme_gray()
+      
+      
       #jpeg(filename=fileName, height=900, width=900)
       #print(p)
       #dev.off()

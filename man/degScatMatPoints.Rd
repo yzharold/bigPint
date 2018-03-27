@@ -7,7 +7,7 @@
 degScatMatPoints(data = data, dataMetrics = dataMetrics,
   pointSize = pointSize, degPointColor = degPointColor,
   threshVar = threshVar, threshVal = threshVal, outDir = outDir,
-  degScatMatPoints = degScatMatPoints, fileName = fileName)
+  fileName = fileName)
 }
 \description{
 Superimpose DEGs onto scatterplot matrix

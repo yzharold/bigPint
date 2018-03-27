@@ -2,7 +2,7 @@
 #' 
 #' Plot static scatterplot matrices.
 #' 
-##' @details There are four options:
+##' @details There are five options:
 ##' \itemize{
 ##'  \item{"hexagon": }{Plot static scatterplot matrix with hexagon binning}
 ##'  \item{"foldChange": }{Plot static scatterplot matrix with fold change}
@@ -12,14 +12,15 @@
 ##' } 
 #' 
 #' @param data data frame containing read counts
-#' @param outDir output directory to save all images (default current directory)
-#' @param saveFile save file to outDir (default TRUE) 
 #' @param pointSize size of plotted points (default 1; used in "foldChange", "orthogonal", "prediction", and "point")
 #' @param threshOrth threshold of orthogonal distance (default 3; used in "orthogonal")
 #' @param threshFC threshold for the fold change (default 3; used in "foldChange")
 #' @param xbins the number of bins partitioning the range of the plot (default 10; used in "hexagon")
 #' @param piLevel prediction interval level (between 0 and 1; default 0.95; used in "prediction")
 #' @param option the type of plot (can choose from c("hexagon", "foldChange", "orthogonal", "prediction", "point"); default "hexagon")
+#' @param saveFile save file to outDir (default FALSE) 
+#' @param outDir output directory to save all images (default current directory)
+#' @param fileName the name of the output file (default is based on plot option)
 #' 
 #' @importFrom plotly plotlyOutput ggplotly renderPlotly config
 #' @importFrom ggplot2 ggplot aes_string aes xlim ylim geom_boxplot
@@ -34,7 +35,7 @@
 #' data(soybean_cn)
 #' soybean_cn <- soybean_cn
 #' plotScatterStatic(soybean_cn)
-plotScatterStatic = function(data=data, outDir=getwd(), saveFile = TRUE, pointSize=1, threshFC=3, threshOrth=3, piLevel=0.95, xbins=10, option="hexagon"){
+plotScatterStatic = function(data=data, outDir=getwd(), saveFile = FALSE, pointSize=1, threshFC=3, threshOrth=3, piLevel=0.95, xbins=10, option="hexagon"){
   
   if (option=="foldChange"){
     staticScatMatFC(data=data, pointSize=pointSize, threshFC=threshFC, outDir=outDir, saveFile=saveFile)

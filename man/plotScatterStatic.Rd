@@ -4,7 +4,7 @@
 \alias{plotScatterStatic}
 \title{Plot static scatterplot matrices}
 \usage{
-plotScatterStatic(data = data, outDir = getwd(), saveFile = TRUE,
+plotScatterStatic(data = data, outDir = getwd(), saveFile = FALSE,
   pointSize = 1, threshFC = 3, threshOrth = 3, piLevel = 0.95,
   xbins = 10, option = "hexagon")
 }
@@ -13,7 +13,7 @@ plotScatterStatic(data = data, outDir = getwd(), saveFile = TRUE,
 
 \item{outDir}{output directory to save all images (default current directory)}
 
-\item{saveFile}{save file to outDir (default TRUE)}
+\item{saveFile}{save file to outDir (default FALSE)}
 
 \item{pointSize}{size of plotted points (default 1; used in "foldChange", "orthogonal", "prediction", and "point")}
 
@@ -26,12 +26,14 @@ plotScatterStatic(data = data, outDir = getwd(), saveFile = TRUE,
 \item{xbins}{the number of bins partitioning the range of the plot (default 10; used in "hexagon")}
 
 \item{option}{the type of plot (can choose from c("hexagon", "foldChange", "orthogonal", "prediction", "point"); default "hexagon")}
+
+\item{fileName}{the name of the output file (default is based on plot option)}
 }
 \description{
 Plot static scatterplot matrices.
 }
 \details{
-There are four options:
+There are five options:
 \itemize{
  \item{"hexagon": }{Plot static scatterplot matrix with hexagon binning}
  \item{"foldChange": }{Plot static scatterplot matrix with fold change}

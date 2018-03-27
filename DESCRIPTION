@@ -1,7 +1,7 @@
 Package: bigPint
 Version: 0.99.0
 Title: Big multivariate data plotted interactively
-Description: Methods for visualizing large multivarate datasets using interactive scatterplot matrices, parallel coordinate plots, and litre plots. 
+Description: Methods for visualizing large multivarate datasets using static and interactive scatterplot matrices, parallel coordinate plots, and litre plots. 
 Author: Lindsay Rutter, Dianne Cook
 Maintainer: Lindsay Rutter <lrutter@iastate.edu>
 License: GPL
