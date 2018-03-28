@@ -5,7 +5,7 @@
 \title{Replicate line plot linked with parallel coordinate plot}
 \usage{
 plotPermutations(data = data, nPerm = 10, topThresh = 50,
-  threshVal = 0.05, outDir = getwd())
+  threshVal = 0.05, option = "none", outDir = getwd())
 }
 \arguments{
 \item{data}{the data frame that contains the logged read counts for all samples}
@@ -15,6 +15,8 @@ plotPermutations(data = data, nPerm = 10, topThresh = 50,
 \item{topThresh}{the number of genes with the lowest FDR values to examine from the real data and the permuted data (default is 50)}
 
 \item{threshVal}{the FDR threshold to count as significant (default is 0.05)}
+
+\item{option}{procedures to be performed on data after significant calls for visualization purposes (c("none", "log", "standardize"), default is "none")}
 
 \item{outDir}{output directory to save all images (default current directory)}
 }

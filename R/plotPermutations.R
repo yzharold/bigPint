@@ -4,6 +4,7 @@
 #' @param nPerm the number of permutations to perform (default is 10)
 #' @param topThresh the number of genes with the lowest FDR values to examine from the real data and the permuted data (default is 50)
 #' @param threshVal the FDR threshold to count as significant (default is 0.05)
+#' @param option procedures to be performed on data after significant calls for visualization purposes (c("none", "log", "standardize"), default is "none")
 #' @param outDir output directory to save all images (default current directory)
 #' @importFrom ggplot2 geom_point scale_shape ggtitle ylab element_blank element_text labs geom_segment facet_wrap scale_y_continuous
 #' @importFrom edgeR cpm calcNormFactors DGEList
@@ -15,7 +16,7 @@
 #' data(soybean_cn)
 #' data <- soybean_cn
 #' plotPermutations(data, nPerm = 10, topThresh = 30, outDir = getwd())
-plotPermutations <- function(data = data, nPerm=10, topThresh=50, threshVal=0.05, outDir=getwd()){
+plotPermutations <- function(data = data, nPerm=10, topThresh=50, threshVal=0.05, option="none", outDir=getwd()){
   groups <- unique(unlist(lapply(colnames(data), function (x) unlist(strsplit(x, "[.]"))[1])))[-1]
   for (i in 1:(length(groups)-1)){
     for (j in (i+1):length(groups)){
@@ -106,6 +107,12 @@ plotPermutations <- function(data = data, nPerm=10, topThresh=50, threshVal=0.05
           x[x==group1] <- 1
           x[x==group2] <- 2
           dat = data.frame(x=x,y=t(gene),z=which(lineup==j))
+          if (option=="standardize"){
+            dat$y = apply(as.matrix(dat$y), 2, scale) 
+          }
+          if (option=="log"){
+            dat$y = log(dat$y +1)
+          }
           colnames(dat)=c("x","y","z")
           dat$x=as.factor(dat$x)
           levels(dat$x)=c(group1,group2)
@@ -121,7 +128,7 @@ plotPermutations <- function(data = data, nPerm=10, topThresh=50, threshVal=0.05
         
         absFC = abs(FC)
         
-        statPlot = qplot(FDR, absFC, xlab = "FDR", ylab ="logFC", color = factor(Color), size = factor(Color)) + scale_color_manual(values=c("black", "red")) + scale_size_manual(values = c(3, 6)) + theme(legend.position="none") + ylim(0,absFC)
+        statPlot = qplot(FDR, absFC, xlab = "FDR", ylab ="abs(logFC)", color = factor(Color), size = factor(Color)) + scale_color_manual(values=c("black", "red")) + scale_size_manual(values = c(3, 6)) + theme(legend.position="none") + ylim(0,max(absFC))
         
         jpeg(file = paste0(finalOutDir, "/ind_", "Gene", t, ".jpg"), height = ceiling(nPerm/5)*175, width = 700)
         print(allPlot)
