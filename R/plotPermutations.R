@@ -107,13 +107,14 @@ plotPermutations <- function(data = data, nPerm=10, topThresh=50, threshVal=0.05
           x[x==group1] <- 1
           x[x==group2] <- 2
           dat = data.frame(x=x,y=t(gene),z=which(lineup==j))
+          colnames(dat)=c("x","y","z")
           if (option=="standardize"){
             dat$y = apply(as.matrix(dat$y), 2, scale) 
+            dat$y = as.numeric(dat$y)
           }
           if (option=="log"){
             dat$y = log(dat$y +1)
           }
-          colnames(dat)=c("x","y","z")
           dat$x=as.factor(dat$x)
           levels(dat$x)=c(group1,group2)
           dat$meanG1 = mean(filter(dat, x==group1)$y)
@@ -125,6 +126,10 @@ plotPermutations <- function(data = data, nPerm=10, topThresh=50, threshVal=0.05
         allPlot = ggplot(fullDat, aes(x, y)) + geom_point(aes(colour = factor(x)), shape = 20, size=5, alpha = 0.5) + scale_shape(solid = FALSE) + ggtitle(paste("Transcript: ", t)) + ylab("Read Count") + theme(axis.title.x = element_blank(), legend.position="bottom", axis.text=element_text(size=12), axis.title=element_text(size=12), legend.title=element_text(size=12), legend.text=element_text(size=12), plot.title=element_text(hjust=0.5)) + labs(colour = "Group", size=12) + geom_segment(aes(x = 1, y = meanG1, xend = 2, yend = meanG2), colour="gray25", size = 0.1) + facet_wrap(~ z, ncol = 5, scales = "free_y")
         
         allPlot2 = ggplot(fullDat, aes(x, y)) + geom_point(aes(colour = factor(x)), shape = 20, size=5, alpha = 0.5) + scale_shape(solid = FALSE) + ggtitle(paste("Transcript: ", t)) + ylab("Read Count") + scale_y_continuous(limits=c(0, max(fullDat$y))) + theme(axis.title.x = element_blank(), legend.position="bottom", axis.text=element_text(size=12), axis.title=element_text(size=12), legend.title=element_text(size=12), legend.text=element_text(size=12), plot.title=element_text(hjust=0.5)) + labs(colour = "Group", size=12) + geom_segment(aes(x = 1, y = meanG1, xend = 2, yend = meanG2), colour="gray25", size = 0.1) + facet_wrap(~ z, ncol = 5)
+        
+        if (option=="standardize"){
+          allPlot2 = ggplot(fullDat, aes(x, y)) + geom_point(aes(colour = factor(x)), shape = 20, size=5, alpha = 0.5) + scale_shape(solid = FALSE) + ggtitle(paste("Transcript: ", t)) + ylab("Read Count") + scale_y_continuous(limits=c(min(fullDat$y), max(fullDat$y))) + theme(axis.title.x = element_blank(), legend.position="bottom", axis.text=element_text(size=12), axis.title=element_text(size=12), legend.title=element_text(size=12), legend.text=element_text(size=12), plot.title=element_text(hjust=0.5)) + labs(colour = "Group", size=12) + geom_segment(aes(x = 1, y = meanG1, xend = 2, yend = meanG2), colour="gray25", size = 0.1) + facet_wrap(~ z, ncol = 5)
+        }
         
         absFC = abs(FC)
         
