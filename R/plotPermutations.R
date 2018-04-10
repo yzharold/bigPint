@@ -52,34 +52,49 @@ plotPermutations <- function(data = data, nPerm=10, topThresh=50, threshVal=0.05
         data3 <- data2[allCombLab[randPerm[a],]]
         colnames(data3) <- colnames(data2)[-1]
         x <- DGEList(counts=data3)
+        
+        minLib <- min(x$samples$lib.size)
+        keep <- rowSums(cpm(x)>round(minLib/1000000)) >= 6 #(change to 12 - nRep?)
+        # Number of genes 15,314--> 8,672
+        x <- x[keep, , keep.lib.sizes=FALSE]
+        
+        x <- calcNormFactors(x)
+        
         group <- as.factor(unlist(lapply(colnames(data3), function (x) unlist(strsplit(x, "[.]"))[1])))
         x$samples$group <- group
-        cpm <- cpm(x)
-        lcpm <- cpm(x, log=TRUE)
-        keep.exprs <- rowSums(cpm>1)>=nRep
-        x <- x[keep.exprs,, keep.lib.sizes=FALSE]
-        x <- calcNormFactors(x, method = "TMM")
-        design <- model.matrix(~0+group)
-        colnames(design) <- gsub("group", "", colnames(design))
+        
+        design <- model.matrix(~0+group, data=x$samples)
+        colnames(design) <- levels(group)
+        x <- estimateDisp(x, design)
+        
         contr.matrix <- makeContrasts(contrasts = paste0(group1,"-",group2), levels = colnames(design))
-        v <- voom(x, design)
-        vfit <- lmFit(v, design)
-        vfit <- contrasts.fit(vfit, contrasts=contr.matrix)
-        efit <- eBayes(vfit)
+        # v <- voom(x, design)
+        # vfit <- lmFit(v, design)
+        # vfit <- contrasts.fit(vfit, contrasts=contr.matrix)
+        # efit <- eBayes(vfit)
+        
+        fit <- glmFit(x, design)
+        lrt <- glmLRT(fit, contrast=contr.matrix) # or could do "contrast"
+        lrt <- topTags(lrt, n = nrow(x[[1]]))[[1]]
+        lrt5 <- lrt[which(lrt$FDR<threshVal),]
+        
+        
+        
         topGenes <- list()
         genePval <- list()
-        temp <- topTreat(efit, coef=1, n=Inf)
-        temp2 <- temp[order(temp[,5]),]
-        sigRows <- 1:topThresh #Keep top 100 lowest FDR
-        temp3 <- temp2[sigRows,]
+        #temp <- topTreat(efit, coef=1, n=Inf)
+        #temp2 <- temp[order(temp[,5]),]
+        keepRows <- 1:topThresh #Keep top 100 lowest FDR
+        temp3 <- lrt[keepRows,]
         
-        numSig[[a]] = length(which(temp2$adj.P.Val < threshVal)) #Count how many DEGs with small adjPVal
+        numSig[[a]] = length(lrt5) #Count how many DEGs with small adjPVal
         
         setDT(temp3, keep.rownames = TRUE)[]
         colnames(temp3)[1] = "ID"
         colnames(temp3)[5] = "pVal" # can't have dots in name
         colnames(temp3)[6] = "adjPVal" # can't have dots in name
         temp3 <- as.data.frame(temp3)
+        
         setDT(data3, keep.rownames = TRUE)[]
         colnames(data3)[1] = "ID"
         data3 <- as.data.frame(data3)
@@ -159,18 +174,6 @@ plotPermutations <- function(data = data, nPerm=10, topThresh=50, threshVal=0.05
     }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 ######################## DESEQ2 APPROACH ########################
 #################################################################
