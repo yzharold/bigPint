@@ -8,6 +8,7 @@
 #' @param outDir output directory to save all images (default current directory)
 #' @importFrom ggplot2 geom_point scale_shape ggtitle ylab element_blank element_text labs geom_segment facet_wrap scale_y_continuous
 #' @importFrom edgeR cpm calcNormFactors DGEList
+#' @importFrom DESeq2 DESeqDataSetFromMatrix DESeq results 
 #' @importFrom dplyr arrange
 #' @importFrom gtools permute
 #' @importFrom tibble rownames_to_column
@@ -15,8 +16,8 @@
 #' @examples
 #' data(soybean_cn)
 #' data <- soybean_cn
-#' plotPermutations(data, nPerm = 10, topThresh = 30, outDir = getwd())
-plotPermutations <- function(data = data, nPerm=10, topThresh=50, threshVal=0.05, option="none", outDir=getwd()){
+#' plotPermutationsD(data, nPerm = 10, topThresh = 30, outDir = getwd())
+plotPermutationsD <- function(data = data, nPerm=10, topThresh=50, threshVal=0.05, option="none", outDir=getwd()){
   groups <- unique(unlist(lapply(colnames(data), function (x) unlist(strsplit(x, "[.]"))[1])))[-1]
   for (i in 1:(length(groups)-1)){
     for (j in (i+1):length(groups)){
@@ -51,46 +52,40 @@ plotPermutations <- function(data = data, nPerm=10, topThresh=50, threshVal=0.05
       for(a in 1:nPerm){
         data3 <- data2[allCombLab[randPerm[a],]]
         colnames(data3) <- colnames(data2)[-1]
-        x <- DGEList(counts=data3)
+        data4 = data3
         
-        minLib <- min(x$samples$lib.size)
-        keep <- rowSums(cpm(x)>round(minLib/1000000)) >= nRep #(change to 12 - nRep?)
-        # Number of genes 15,314--> 8,672
-        x <- x[keep, , keep.lib.sizes=FALSE]
+        data3 <- as.matrix(data3)
+        coldata = data.frame(row.names = colnames(data3), treatment = unlist(lapply(colnames(data3), function (x) unlist(strsplit(x, "[.]"))[1])))
+        dds = DESeqDataSetFromMatrix(countData = data3, colData = coldata, design = ~ treatment)
+        dds <- DESeq(dds)
         
-        x <- calcNormFactors(x)
+        res <- results(dds, contrast=c("treatment",levels(coldata$treatment)[i], levels(coldata$treatment)[j]))
+        degLength <- length(which((res@listData)$padj <threshVal))
         
-        group <- as.factor(unlist(lapply(colnames(data3), function (x) unlist(strsplit(x, "[.]"))[1])))
-        x$samples$group <- group
-        
-        design <- model.matrix(~0+group, data=x$samples)
-        colnames(design) <- levels(group)
-        x <- estimateDisp(x, design)
-        
-        contr.matrix <- makeContrasts(contrasts = paste0(group1,"-",group2), levels = colnames(design))
-
-        fit <- glmFit(x, design)
-        lrt <- glmLRT(fit, contrast=contr.matrix) # or could do "contrast"
-        lrt <- topTags(lrt, n = nrow(x[[1]]))[[1]]
-        lrt5 <- lrt[which(lrt$FDR<threshVal),]
+        lrt = as.data.frame(res@listData)
+        lrt = cbind(ID = res@rownames, lrt)
+        lrt$ID = as.character(lrt$ID)
+        lrt = lrt[-which(is.na(lrt$padj)),]
+        lrt2 <- lrt[ order(lrt[,7]), ]
+        lrt5 <- lrt[which(lrt$padj<threshVal),]
         
         topGenes <- list()
         genePval <- list()
         keepRows <- 1:topThresh #Keep top 100 lowest FDR
-        temp3 <- lrt[keepRows,]
+        temp3 <- lrt2[keepRows,]
         
         numSig[[a]] = nrow(lrt5) #Count how many DEGs with small adjPVal
         
-        setDT(temp3, keep.rownames = TRUE)[]
+        setDT(temp3, keep.rownames = FALSE)[]
         colnames(temp3)[1] = "ID"
-        colnames(temp3)[5] = "pVal" # can't have dots in name
-        colnames(temp3)[6] = "adjPVal" # can't have dots in name
+        colnames(temp3)[6] = "pVal" # can't have dots in name
+        colnames(temp3)[7] = "adjPVal" # can't have dots in name
         temp3 <- as.data.frame(temp3)
         
-        setDT(data3, keep.rownames = TRUE)[]
-        colnames(data3)[1] = "ID"
-        data3 <- as.data.frame(data3)
-        tt <- merge(data3, temp3, by="ID")
+        setDT(data4, keep.rownames = TRUE)[]
+        colnames(data4)[1] = "ID"
+        data4 <- as.data.frame(data4)
+        tt <- merge(data4, temp3, by="ID")
         
         permList[[a]] = arrange(tt, adjPVal)
         write.csv(permList[[a]], file= paste(finalOutDir, "/TopDEG", a, ".csv", sep=""))
@@ -107,7 +102,7 @@ plotPermutations <- function(data = data, nPerm=10, topThresh=50, threshVal=0.05
         correctPlace[t] <- which(lineup==1)
         for (j in 1:nPerm){
           FDR[j] = permList[[j]]$adjPVal[t]
-          FC[j] = permList[[j]]$logFC[t]
+          FC[j] = permList[[j]]$log2FoldChange[t] ####################################
           
           gene = permList[[j]][t,2:(2*nRep+1)]
           x = unlist(lapply(colnames(gene), function (x) unlist(strsplit(x, "[.]"))[1]))
