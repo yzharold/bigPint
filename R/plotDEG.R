@@ -184,10 +184,10 @@ degScatMatPoints = function(data=data, dataMetrics=dataMetrics, pointSize=pointS
       p <- ggpairs(datSel[,-1], lower = list(continuous = my_fn), upper = list(continuous = wrap("cor", size = 4))) + theme_gray()
       
       
-      jpeg(filename=fileName, height=900, width=900)
-      print(p)
-      dev.off()
-      #ret[[paste0(group1,"_",group2)]] <- p
+      #jpeg(filename=fileName, height=900, width=900)
+      #print(p)
+      #dev.off()
+      ret[[paste0(group1,"_",group2)]] <- p
     }
   }
 invisible(ret)

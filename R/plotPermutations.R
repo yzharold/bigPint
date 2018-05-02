@@ -54,7 +54,7 @@ plotPermutations <- function(data = data, nPerm=10, topThresh=50, threshVal=0.05
         x <- DGEList(counts=data3)
         
         minLib <- min(x$samples$lib.size)
-        keep <- rowSums(cpm(x)>round(minLib/1000000)) >= nRep #(change to 12 - nRep?)
+        keep <- rowSums(cpm(x)>round(minLib/1000000)) >= nRep/2
         # Number of genes 15,314--> 8,672
         x <- x[keep, , keep.lib.sizes=FALSE]
         
