@@ -1,5 +1,9 @@
 # bigPint
 
+**Vignette:**
+
+We plan to have a step-by-step vignette published soon on this website, as well as case examples using public RNA-seq datasets demonstrating why these plotting tools are useful.
+
 **Motivation:**
 
 It is important to plot subsets of variables in order to examine variable associations in a dataset. Traditional modeling approaches without plotting the data are problematic because models are replete with assumptions that they alone cannot call into question. By plotting the data, analysts can improve modeling; they can iterate between visualizations and modeling to enhance the models based on feedback from the visuals.
